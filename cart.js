@@ -1,4 +1,5 @@
 let basket = JSON.parse(localStorage.getItem("data")) || [];
+let total = document.getElementById("total");
 let cartEmpty = document.getElementById("cartEmpty");
 let cartItems = document.getElementById("cartItems");
 let calculation = () => {
@@ -35,9 +36,7 @@ let getItems = () => {
         </div>
         </div>
         </div>
-        <div class="flex justify-end">
-        <p>Total Price: BDT</p>
-        </div>
+        <div id="total" class="text-center"></div>
         </div>
         `;
     }));
@@ -53,7 +52,23 @@ let getItems = () => {
         `;
   }
 };
+
 getItems();
+let increment = (id) => {
+  let selectItem = id;
+  let search = basket.find((x) => x.id === selectItem.id);
+  if (search === undefined) {
+    basket.push({
+      id: selectItem.id,
+      item: 1,
+    });
+  } else {
+    search.item += 1;
+  }
+  getItems();
+  update(selectItem.id);
+  localStorage.setItem("data", JSON.stringify(basket));
+};
 let decrement = (id) => {
   let selectItem = id;
   let search = basket.find((x) => x.id === selectItem.id);
@@ -68,32 +83,42 @@ let decrement = (id) => {
   getItems();
   localStorage.setItem("data", JSON.stringify(basket));
 };
-let increment = (id) => {
-  let selectItem = id;
-  let search = basket.find((x) => x.id === selectItem.id);
-  if (search === undefined) {
-    basket.push({
-      id: selectItem.id,
-      item: 1,
-    });
-  } else {
-    search.item += 1;
-  }
-
-  update(selectItem.id);
-  getItems();
-  localStorage.setItem("data", JSON.stringify(basket));
-};
 
 let update = (id) => {
   let search = basket.find((x) => x.id === id);
   document.getElementById(id).innerHTML = search.item;
   calculation();
+  totalAmount();
 };
 
 let removeItem = (id) => {
   let selectedItem = id;
   basket = basket.filter((x) => x.id !== selectedItem.id);
   getItems();
+  calculation();
+  totalAmount();
   localStorage.setItem("data", JSON.stringify(basket));
 };
+
+let removeAllItem = () => {
+  basket = [];
+  getItems();
+  localStorage.setItem("data", JSON.stringify(basket));
+};
+
+let totalAmount = () => {
+  if (basket.length !== 0) {
+    let amount = basket
+      .map((x) => {
+        let { id, item } = x;
+        let search = data.find((y) => y.id === id) || [];
+        return item * search.price;
+      })
+      .reduce((x, y) => x + y, 0);
+    cartEmpty.innerHTML = `
+      <h2>Total price : ${amount}BDT</h2>
+      <div onclick="removeAllItem()" class="text-center">Clear All</div>
+      `;
+  } else return;
+};
+totalAmount();
