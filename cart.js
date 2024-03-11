@@ -1,0 +1,99 @@
+let basket = JSON.parse(localStorage.getItem("data")) || [];
+let cartEmpty = document.getElementById("cartEmpty");
+let cartItems = document.getElementById("cartItems");
+let calculation = () => {
+  let addToCart = document.getElementById("addToCart");
+  addToCart.innerHTML = basket.map((x) => x.item).reduce((x, y) => x + y, 0);
+};
+
+calculation();
+
+let getItems = () => {
+  if (basket.length !== 0) {
+    return (cartItems.innerHTML = basket.map((x) => {
+      let { id, item } = x;
+      let search = data.find((y) => y.id === id);
+      return `
+        <div class="max-w-md mx-auto">
+        <div class="flex justify-between border rounded h-[100px] p-4 relative">
+        <div onclick="removeItem(${id})" class="absolute top-0 right-1 font-bold text-red-400 cursor-pointer">X</div>
+        <div class="w-[20%]"><img class='w-20 h-full' src="images/${
+          search.image
+        }" alt=""></div>
+        <div class="w-[80%] pl-10">
+        <div class="flex justify-between">
+        <h2 class="text-lg font-medium">${search.name}</h2>
+        <p>Price: ${search.price}BDT</p>
+        </div>
+        <div class="flex justify-between pt-3 pl-6">
+        <div class='flex'>
+              <button onclick="decrement(${id})">-</button>
+              <span id=${id}>${item}</span>
+              <button onclick="increment(${id})">+</button>
+            </div>
+        <p>Total Price: ${item * search.price}BDT</p>
+        </div>
+        </div>
+        </div>
+        <div class="flex justify-end">
+        <p>Total Price: BDT</p>
+        </div>
+        </div>
+        `;
+    }));
+  } else {
+    cartItems.innerHTML = ``;
+    cartEmpty.innerHTML = `
+        <div class="pt-20">
+        <h2 class="text-3xl font-bold text-red-500">No Item</h2>
+        <div class="pt-5">
+        <a class="text-3xl font-bold text-green-500 underline" href="index.html">Add item</a>
+        </div>
+        </div>
+        `;
+  }
+};
+getItems();
+let decrement = (id) => {
+  let selectItem = id;
+  let search = basket.find((x) => x.id === selectItem.id);
+  if (search === undefined) return;
+  else if (search.item === 0) return;
+  else {
+    search.item -= 1;
+  }
+
+  update(selectItem.id);
+  basket = basket.filter((x) => x.item !== 0);
+  getItems();
+  localStorage.setItem("data", JSON.stringify(basket));
+};
+let increment = (id) => {
+  let selectItem = id;
+  let search = basket.find((x) => x.id === selectItem.id);
+  if (search === undefined) {
+    basket.push({
+      id: selectItem.id,
+      item: 1,
+    });
+  } else {
+    search.item += 1;
+  }
+
+  update(selectItem.id);
+  getItems();
+  localStorage.setItem("data", JSON.stringify(basket));
+};
+
+let update = (id) => {
+  let search = basket.find((x) => x.id === id);
+  document.getElementById(id).innerHTML = search.item;
+  calculation();
+};
+
+let removeItem = (id) => {
+  let selectedItem = id;
+  basket = basket.filter((x) => x.id !== selectedItem.id);
+  getItems();
+  localStorage.setItem("data", JSON.stringify(basket));
+};

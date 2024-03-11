@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    <script src="tailwind.js"></script>
+  </head>
+  <body>
+    <div class="container mx-auto max-w-[1200px] relative">
+      <div class="flex justify-between">
+        <div class="pt-5">
+          <a class="text-3xl font-bold" href="index.html">Home</a>
+        </div>
+        <a href="cart.html">
+          <div class="absolute right-9 top-6 text-3xl">
+            Cart
+            <span
+              id="addToCart"
+              class="text-red-700 font-bold absolute top-[-5px]"
+            ></span>
+          </div>
+        </a>
+      </div>
+      <div id="cartEmpty" class="text-center"></div>
+      <div id="cartItems"></div>
+    </div>
+    <script src="data.js"></script>
+    <script src="cart.js"></script>
+  </body>
+</html>
